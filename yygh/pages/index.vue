@@ -51,14 +51,11 @@
             <div class="filter-wrapper">
                       <span class="label">等级：</span>         
               <div class="condition-wrapper">
-                <span class="item v-link highlight clickable selected">
-                                                                      全部 </span
-                ><span class="item v-link clickable">
-                                                                      三级医院 </span
-                ><span class="item v-link clickable">
-                                                                      二级医院 </span
-                ><span class="item v-link clickable">
-                                                                      一级医院 </span
+                <span
+                  v-for="(item, index) in hostypeList"
+                  :key="index"
+                  class="item v-link clickable"
+                  >{{ item.name }} </span
                 >
               </div>
                     
@@ -67,40 +64,11 @@
             <div class="filter-wrapper">
                     <span class="label">地区：</span>       
               <div class="condition-wrapper">
-                <span class="item v-link highlight clickable selected">
-                                                                    全部 </span
-                ><span class="item v-link clickable">
-                                                                    东城区 </span
-                ><span class="item v-link clickable">
-                                                                    西城区 </span
-                ><span class="item v-link clickable">
-                                                                    朝阳区 </span
-                ><span class="item v-link clickable">
-                                                                    丰台区 </span
-                ><span class="item v-link clickable">
-                                                                    石景山区 </span
-                ><span class="item v-link clickable">
-                                                                    海淀区 </span
-                ><span class="item v-link clickable">
-                                                                    门头沟区 </span
-                ><span class="item v-link clickable">
-                                                                    房山区 </span
-                ><span class="item v-link clickable">
-                                                                    通州区 </span
-                ><span class="item v-link clickable">
-                                                                    顺义区 </span
-                ><span class="item v-link clickable">
-                                                                    昌平区 </span
-                ><span class="item v-link clickable">
-                                                                    大兴区 </span
-                ><span class="item v-link clickable">
-                                                                    怀柔区 </span
-                ><span class="item v-link clickable">
-                                                                    平谷区 </span
-                ><span class="item v-link clickable">
-                                                                    密云区 </span
-                ><span class="item v-link clickable">
-                                                                    延庆区 </span
+                <span
+                  v-for="(item, index) in districtList"
+                  :key="index"
+                  class="item v-link clickable"
+                  >{{ item.name }}</span
                 >
               </div>
                     
@@ -363,5 +331,65 @@
   </div>
 </template>
 <script>
-export default {};
+import hospApi from "@/api/hosp";
+import dictApi from "@/api/dict";
+
+export default {
+  //服务端渲染异步，显示医院列表
+  // asyncData({ params, error }) {
+  //   //调用
+  //   return hospApi.getPageList(1, 10, null).then((response) => {
+  //     return {
+  //       list: response.data.content,
+  //       pages: response.data.totalPages,
+  //     };
+  //   });
+  // },
+  data() {
+    return {
+      searchObj: {},
+      page: 1,
+      limit: 10,
+
+      hosname: "", //医院名称
+      hostypeList: [], //医院等级集合
+      districtList: [], //地区集合
+      hostypeActiveIndex: 0,
+      provinceActiveIndex: 0,
+      list: [],
+      pages:0,
+    };
+  },
+  created() {
+    this.init();
+  },
+  methods: {
+    //查询医院等级列表 和 所有地区列表
+    init() {
+      //查询医院等级列表
+      dictApi.findByDictCode("Hostype").then((response) => {
+        console.log("医院等级返回值---------", response); //hostypeList清空
+        this.hostypeList = []; //向hostypeList添加全部值
+        this.hostypeList.push({ name: "全部", value: "" }); //把接口返回数据，添加到hostypeList
+        for (var i = 0; i < response.data.length; i++) {
+          this.hostypeList.push(response.data[i]);
+        }
+      }); //查询地区数据
+      dictApi.findByDictCode("Shenzhen").then((response) => {
+        console.log("地区返回值---------", response);
+        this.districtList = [];
+        this.districtList.push({ name: "全部", value: "" });
+        for (let i in response.data) {
+          this.districtList.push(response.data[i]);
+        }
+      });
+      hospApi.getPageList(1,10,null)
+        .then(res => {
+          console.log("医院列表----------", res)
+          this.list = res.data.content;
+          this.page = res.data.totalPages;
+        });
+    },
+  },
+};
 </script>

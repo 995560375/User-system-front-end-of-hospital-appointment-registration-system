@@ -12,7 +12,7 @@
           height="50"
           src="~assets/images/logo.png"
         />
-                        <span class="text">尚医通 预约挂号统一平台</span>
+                        <span class="text">华南理工 预约挂号统一平台</span>
                     
       </div>
               <!-- 搜索框 -->
