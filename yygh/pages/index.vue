@@ -80,7 +80,7 @@
             
         <div class="v-scroll-list hospital-list">
               
-          <div class="v-card clickable list-item">
+          <div v-for="(item,index) in list" :key="index" class="v-card clickable list-item">
                 
             <div class="">
                     
@@ -88,105 +88,31 @@
                       
                 <div class="wrapper">
                         
-                  <div class="hospital-title"> 北京协和医院       </div>
+                  <div class="hospital-title">{{item.hosname}}</div>
                         
                   <div class="bottom-container">
                           
                     <div class="icon-wrapper">
-                      <span class="iconfont"></span>
-                                                  三级甲等       
-                    </div>
+                      <span class="iconfont"></span>{{item.param.hostypeString}}</div>
                         
                     <div class="icon-wrapper">
-                      <span class="iconfont"></span>
-                                                每天8:30放号     
-                    </div>
+                      <span class="iconfont"></span>每天{{ item.bookingRule.releaseTime }}放号</div>
                         
                   </div>
                       
                 </div>
-                    <img
-                  src="images/23176337663806575.png"
-                  alt="北京协和医院"
-                  class="hospital-img"
-                />
+                    <img :src="'data:image/jpeg;base64,'+item.logoData"
+                     :alt="item.hosname"
+                     class="hospital-img">
               </div>
                   
             </div>
                 
           </div>
                 
-          <div class="v-card clickable list-item space">
-                  
-            <div class="">
-                    
-              <div class="hospital-list-item hos-item" index="0">
-                      
-                <div class="wrapper">
-                        
-                  <div class="hospital-title"> 北京协和医院       </div>
-                        
-                  <div class="bottom-container">
-                          
-                    <div class="icon-wrapper">
-                      <span class="iconfont"></span>
-                                                  三级甲等       
-                    </div>
-                        
-                    <div class="icon-wrapper">
-                      <span class="iconfont"></span>
-                                                每天8:30放号     
-                    </div>
-                        
-                  </div>
-                      
-                </div>
-                    <img
-                  src="images/23176337663806575.png"
-                  alt="北京协和医院"
-                  class="hospital-img"
-                />
-              </div>
-                  
-            </div>
-                
-          </div>
+          
               
-          <div class="v-card clickable list-item">
-                
-            <div class="">
-                  
-              <div class="hospital-list-item hos-item" index="0">
-                      
-                <div class="wrapper">
-                        
-                  <div class="hospital-title"> 北京协和医院       </div>
-                        
-                  <div class="bottom-container">
-                          
-                    <div class="icon-wrapper">
-                      <span class="iconfont"></span>
-                                                  三级甲等       
-                    </div>
-                          
-                    <div class="icon-wrapper">
-                      <span class="iconfont"></span>
-                                                  每天8:30放号       
-                    </div>
-                        
-                  </div>
-                      
-                </div>
-                    <img
-                  src="images/23176337663806575.png"
-                  alt="北京协和医院"
-                  class="hospital-img"
-                />
-              </div>
-                  
-            </div>
-                
-          </div>
+          
               
         </div>
             
@@ -336,15 +262,15 @@ import dictApi from "@/api/dict";
 
 export default {
   //服务端渲染异步，显示医院列表
-  // asyncData({ params, error }) {
-  //   //调用
-  //   return hospApi.getPageList(1, 10, null).then((response) => {
-  //     return {
-  //       list: response.data.content,
-  //       pages: response.data.totalPages,
-  //     };
-  //   });
-  // },
+  asyncData({ params, error }) {
+    //调用
+    return hospApi.getPageList(1, 10, null).then((response) => {
+      return {
+        list: response.data.content,
+        pages: response.data.totalPages,
+      };
+    });
+  },
   data() {
     return {
       searchObj: {},
@@ -356,8 +282,8 @@ export default {
       districtList: [], //地区集合
       hostypeActiveIndex: 0,
       provinceActiveIndex: 0,
-      list: [],
-      pages:0,
+      // list: [],
+      // pages:0,
     };
   },
   created() {
@@ -383,12 +309,12 @@ export default {
           this.districtList.push(response.data[i]);
         }
       });
-      hospApi.getPageList(1,10,null)
-        .then(res => {
-          console.log("医院列表----------", res)
-          this.list = res.data.content;
-          this.page = res.data.totalPages;
-        });
+      // hospApi.getPageList(1,10,null)
+      //   .then(res => {
+      //     console.log("医院列表----------", res)
+      //     this.list = res.data.content;
+      //     this.page = res.data.totalPages;
+      //   });
     },
   },
 };
